@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mypy Plugin Playground</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.21/lib/codemirror.css">
+  <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+  <div id="controls">
+    <button id="run" title="Run code (Ctrl-Enter)" aria-label="Run code (Ctrl-Enter)">Run</button>
+    <button id="share" aria-label="Share code">Share</button>
+    <select id="examples" aria-label="Example list"><option>Select example...</option></select>
+    <div class="separator"></div>
+    <button class="active" id="tab_editor" title="Show code (Ctrl-Shift-1)" aria-label="Show code (Ctrl-Shift-1)">Code</button>
+    <button id="tab_output" title="Show output (Ctrl-Shift-2)" aria-label="Show output (Ctrl-Shift-2)">Output</button>
+    <button id="tab_log" title="Show log (Ctrl-Shift-3)" aria-label="Show log (Ctrl-Shift-3)">Log</button>
+  </div>
+
+  <div id="surface">
+    <div id="editor">
+      <div class="file-tabs" role="tablist" aria-label="Source files">
+        <div class="file-tab" role="tab" aria-selected="true">main.py</div>
+        <div class="file-tab" role="tab" aria-selected="false">plugin.py</div>
+      </div>
+      <textarea id="code">from mylib import model
+
+@model
+class Point:
+    x: int
+    y: int
+
+point = Point(x=1, y=2)</textarea>
+    </div>
+    <div id="output"></div>
+    <div id="log"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.21/lib/codemirror.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.21/mode/python/python.js"></script>
+  <script>
+    CodeMirror.fromTextArea(document.querySelector("#code"), {
+      lineNumbers: true,
+      mode: "python",
+      indentUnit: 4,
+      tabSize: 4
+    });
+  </script>
+</body>
+</html>

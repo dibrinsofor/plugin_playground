@@ -1,0 +1,90 @@
+#controls {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 10px;
+}
+#controls > * {
+  margin-bottom: 5px;
+}
+#controls button {
+  font-family: sans-serif;
+  background: #eee;
+  border: 1px solid #666;
+  border-radius: 5px;
+  padding: 2px 5px;
+}
+#controls button.active {
+  background: #eef;
+  border-color: #55b;
+  color: #005;
+}
+#controls button:hover {
+  background: white;
+}
+#controls button:active {
+  background: #ccc;
+}
+#controls .separator {
+  flex-grow: 1;
+}
+
+#surface {
+  display: flex;
+  align-content: stretch;
+  align-items: stretch;
+  height: 80vh;
+  position: relative;
+  border: 1px solid #666;
+}
+#editor, #output, #log {
+  flex-basis: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  display: none;
+}
+#editor {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#log {
+  overflow-y: auto;
+  padding: 3px 7px;
+  font-size: 80%;
+}
+.file-tabs {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  flex: none;
+  background: inherit;
+  border-bottom: 1px solid #666;
+}
+.file-tab {
+  color: #777;
+  font-family: monospace;
+  padding: 7px 12px;
+}
+.file-tab[aria-selected="true"] {
+  background: #000;
+  color: #fff;
+}
+#editor .CodeMirror {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  border: none;
+}
+#editor .CodeMirror-scroll {
+  overflow: auto;
+}
+
+@media screen and (min-width: 1200px) {
+  #tab_editor { display: none }
+  #editor { display: flex !important; border-right: 1px solid #666; }
+  #editor, #output, #log { flex-basis: 50%; width: 50%; }
+}
+@media screen and (max-width: 570px) {
+  #controls .separator {
+    flex-basis: 100%;
+  }
+}
