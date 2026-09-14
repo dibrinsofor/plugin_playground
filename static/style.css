@@ -61,8 +61,10 @@
 }
 .file-tab {
   color: #777;
+  cursor: pointer;
   font-family: monospace;
   padding: 7px 12px;
+  user-select: none;
 }
 .file-tab[aria-selected="true"] {
   background: #000;

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mypy Plugin Playground</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.21/lib/codemirror.css">
-  <link rel="stylesheet" href="/static/style.css?v=2">
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
   <div id="controls">
@@ -21,8 +21,8 @@
   <div id="surface">
     <div id="editor">
       <div class="file-tabs" role="tablist" aria-label="Source files">
-        <div class="file-tab" role="tab" aria-selected="true">main.py</div>
-        <div class="file-tab" role="tab" aria-selected="false">plugin.py</div>
+        <div class="file-tab" data-file="main" role="tab" tabindex="0" aria-selected="true">main.py</div>
+        <div class="file-tab" data-file="plugin" role="tab" tabindex="-1" aria-selected="false">plugin.py</div>
       </div>
       <textarea id="code">from mylib import model
 
@@ -40,11 +40,41 @@ point = Point(x=1, y=2)</textarea>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.21/lib/codemirror.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.21/mode/python/python.js"></script>
   <script>
-    CodeMirror.fromTextArea(document.querySelector("#code"), {
+    const editor = CodeMirror.fromTextArea(document.querySelector("#code"), {
       lineNumbers: true,
       mode: "python",
       indentUnit: 4,
       tabSize: 4
+    });
+
+    const documents = {
+      main: editor.getDoc(),
+      plugin: new CodeMirror.Doc("", "python")
+    };
+
+    function selectFile(tab) {
+      const file = tab.dataset.file;
+      if (editor.getDoc() !== documents[file]) {
+        editor.swapDoc(documents[file]);
+      }
+
+      document.querySelectorAll(".file-tab").forEach(fileTab => {
+        const active = fileTab === tab;
+        fileTab.setAttribute("aria-selected", active);
+        fileTab.tabIndex = active ? 0 : -1;
+      });
+
+      editor.focus();
+    }
+
+    document.querySelectorAll(".file-tab").forEach(tab => {
+      tab.addEventListener("click", () => selectFile(tab));
+      tab.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          selectFile(tab);
+        }
+      });
     });
   </script>
 </body>
