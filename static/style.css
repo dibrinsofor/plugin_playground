@@ -1,3 +1,16 @@
+@font-face {
+  font-family: "Cascadia Code";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/fontsource/fonts/cascadia-code@5.2.3/latin-400-normal.woff2") format("woff2");
+}
+
+body {
+  margin: 0;
+  padding: 8vh 10vw 0;
+}
+
 #controls {
   display: flex;
   flex-wrap: wrap;
@@ -7,11 +20,34 @@
   margin-bottom: 5px;
 }
 #controls button {
-  font-family: sans-serif;
+  font-family: "Cascadia Code", monospace;
   background: #eee;
   border: 1px solid #666;
   border-radius: 5px;
   padding: 2px 5px;
+}
+#controls select,
+#surface {
+  font-family: "Cascadia Code", monospace;
+}
+#controls button,
+#controls select,
+#surface {
+  font-feature-settings: "calt" 1, "liga" 1;
+  font-variant-ligatures: contextual common-ligatures;
+}
+#controls #run {
+  background: #00794c;
+  border: 1px dotted #000;
+  border-radius: 0;
+  color: #fff;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: .1rem;
+  line-height: 1.2rem;
+  padding-left: .3rem;
+  padding-right: .2rem;
+  text-transform: uppercase;
 }
 #controls button.active {
   background: #eef;
@@ -62,7 +98,7 @@
 .file-tab {
   color: #777;
   cursor: pointer;
-  font-family: monospace;
+  font-family: inherit;
   padding: 7px 12px;
   user-select: none;
 }
@@ -75,6 +111,7 @@
   min-height: 0;
   height: auto;
   border: none;
+  font-family: "Cascadia Code", monospace;
 }
 #editor .CodeMirror-scroll {
   overflow: auto;
