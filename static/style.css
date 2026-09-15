@@ -33,7 +33,7 @@ body {
 #controls button {
   font-family: "Cascadia Code", monospace;
   background: #eee;
-  border: 1px solid #666;
+  border: 1px solid #888;
   border-radius: 5px;
   padding: 2px 5px;
 }
@@ -82,7 +82,7 @@ body {
   align-items: stretch;
   height: 80vh;
   position: relative;
-  border: 1px solid #666;
+  border: 1px solid #888;
 }
 #editor, #output, #log {
   flex-basis: 100%;
@@ -114,10 +114,10 @@ body {
   grid-template-columns: max-content max-content;
   flex: none;
   background: inherit;
-  border-bottom: 1px solid #666;
+  border-bottom: 1px solid #888;
 }
 .file-tab {
-  color: #777;
+  color: #888;
   cursor: pointer;
   font-family: inherit;
   font-size: .75rem;
@@ -141,9 +141,28 @@ body {
   overflow: auto;
 }
 
+#controls .checkbox-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Cascadia Code", monospace;
+  font-size: .75rem;
+  color: #333;
+  cursor: pointer;
+}
+
+#controls .checkbox-tab input[type="checkbox"] {
+  font: inherit;
+  accent-color: #00794c;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  margin: 0;
+}
+
 @media screen and (min-width: 1200px) {
   #tab_editor { display: none }
-  #editor { display: flex !important; border-right: 1px solid #666; }
+  #editor { display: flex !important; border-right: 1px solid #888; }
   #editor, #output, #log { flex-basis: 50%; width: 50%; }
 }
 @media screen and (max-width: 570px) {

@@ -14,8 +14,11 @@
     <select id="examples" aria-label="Example list"><option>Select example...</option></select>
     <div class="separator"></div>
     <button class="active" id="tab_editor" title="Show code (Ctrl-Shift-1)" aria-label="Show code (Ctrl-Shift-1)">Code</button>
-    <button id="tab_output" title="Show output (Ctrl-Shift-2)" aria-label="Show output (Ctrl-Shift-2)">Output</button>
-    <button id="tab_log" title="Show log (Ctrl-Shift-3)" aria-label="Show log (Ctrl-Shift-3)">Log</button>
+    <label class="checkbox-tab" for="plugin_fork">
+      <input type="checkbox" id="plugin_fork">
+      <span>Run without plugin hook</span>
+    </label>
+     <button id="tab_output" title="Show output (Ctrl-Shift-2)" aria-label="Show output (Ctrl-Shift-2)">Output</button>
   </div>
 
   <div id="surface">
@@ -81,6 +84,19 @@ value: int = bad(1)</textarea>
       plugin: new CodeMirror.Doc("", "python")
     };
 
+    const saved_main = localStorage.getItem("main_py");
+    if (saved_main) documents.main.setValue(saved_main);
+
+    const saved_plugin = localStorage.getItem("plugin_py");
+    if (saved_plugin) documents.plugin.setValue(saved_plugin);
+
+    documents.main.on("change", () => {
+      localStorage.setItem("main_py", documents.main.getValue());
+    });
+    documents.plugin.on("change", () => {
+      localStorage.setItem("plugin_py", documents.plugin.getValue());
+    });
+
     function selectFile(tab) {
       const file = tab.dataset.file;
       if (editor.getDoc() !== documents[file]) {
@@ -109,12 +125,10 @@ value: int = bad(1)</textarea>
     const panels = {
       editor: document.querySelector("#editor"),
       output: document.querySelector("#output"),
-      log: document.querySelector("#log")
     };
     const panelTabs = {
       editor: document.querySelector("#tab_editor"),
       output: document.querySelector("#tab_output"),
-      log: document.querySelector("#tab_log")
     };
 
     function selectPanel(name) {
@@ -133,7 +147,6 @@ value: int = bad(1)</textarea>
       const button = event.currentTarget;
       button.disabled = true;
       panels.output.textContent = "Checking…";
-      panels.log.textContent = "";
       selectPanel("output");
 
       try {
@@ -144,10 +157,8 @@ value: int = bad(1)</textarea>
         });
         const result = await response.json();
         panels.output.textContent = result.stdout || "Success: no type errors found";
-        panels.log.textContent = result.stderr || `mypy exited with status ${result.status}`;
       } catch (error) {
         panels.output.textContent = "Type check failed";
-        panels.log.textContent = String(error);
         selectPanel("log");
       } finally {
         button.disabled = false;
