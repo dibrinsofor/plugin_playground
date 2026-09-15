@@ -8,7 +8,18 @@
 
 body {
   margin: 0;
-  padding: 8vh 10vw 0;
+  padding: 4vh 15vw 0;
+  background-color: #eee;
+}
+
+#workspace {
+  background-color: #fff;
+  box-shadow: 2px 2px #ccc;
+  border: 1px solid #888;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+  padding: .5rem 1rem 1rem;
+  line-height: 1.5rem;
 }
 
 #controls {
@@ -48,6 +59,7 @@ body {
   padding-left: .3rem;
   padding-right: .2rem;
   text-transform: uppercase;
+  box-shadow: 2px 2px #ccc;
 }
 #controls button.active {
   background: #eef;
@@ -99,6 +111,7 @@ body {
   color: #777;
   cursor: pointer;
   font-family: inherit;
+  font-size: .75rem;
   padding: 7px 12px;
   user-select: none;
 }
@@ -112,6 +125,8 @@ body {
   height: auto;
   border: none;
   font-family: "Cascadia Code", monospace;
+  font-size: .75rem;
+  line-height: 1.4;
 }
 #editor .CodeMirror-scroll {
   overflow: auto;
