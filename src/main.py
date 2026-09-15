@@ -1,13 +1,16 @@
-import subprocess, tempfile, resource, os
 from pathlib import Path
+from threading import Lock
 
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from mypy import api as mypy_api
 from pydantic import BaseModel
 
 app = FastAPI()
 ROOT = Path(__file__).resolve().parent.parent
+MYPY_CONFIG = ROOT / "mypy.ini"
+MYPY_LOCK = Lock()
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 
 
@@ -18,23 +21,21 @@ def playground():
 class CheckRequest(BaseModel):
     code: str
 
-def limit_resources():
-    resource.setrlimit(resource.RLIMIT_CPU, (5, 5))
-    resource.setrlimit(resource.RLIMIT_AS, (512 * 1024 * 1024, 512 * 1024 * 1024))
-
 @app.post("/check")
 def check(req: CheckRequest):
-    with tempfile.NamedTemporaryFile(suffix=".py", mode="w", delete=False) as f:
-        f.write(req.code)
-        path = f.name
-    try:
-        result = subprocess.run(
-            ["mypy", "--plugins", "your_plugin", "--no-incremental", path],
-            capture_output=True, text=True, timeout=8,
-            preexec_fn=limit_resources,
+    with MYPY_LOCK:
+        stdout, stderr, status = mypy_api.run(
+            [
+                "--config-file",
+                str(MYPY_CONFIG),
+                "--no-incremental",
+                "--command",
+                req.code,
+            ]
         )
-        return {"stdout": result.stdout, "stderr": result.stderr}
-    except subprocess.TimeoutExpired:
-        return {"stdout": "", "stderr": "type check timed out"}
-    finally:
-        os.unlink(path)
+
+    return {
+        "stdout": stdout.replace("<string>", "main.py"),
+        "stderr": stderr.replace("<string>", "main.py"),
+        "status": status,
+    }

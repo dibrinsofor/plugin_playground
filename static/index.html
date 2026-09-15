@@ -25,14 +25,13 @@
         <div class="file-tab" data-file="main" role="tab" tabindex="0" aria-selected="true">main.py</div>
         <div class="file-tab" data-file="plugin" role="tab" tabindex="-1" aria-selected="false">plugin.py</div>
       </div>
-      <textarea id="code">from mylib import model
+      <textarea id="code">from typing import Any
 
-@model
-class Point:
-    x: int
-    y: int
+def bad(x: int) -> Any:
+    return str(x)
 
-point = Point(x=1, y=2)</textarea>
+reveal_type(bad(1))
+value: int = bad(1)</textarea>
     </div>
     <div id="output"></div>
     <div id="log"></div>
@@ -78,6 +77,56 @@ point = Point(x=1, y=2)</textarea>
         }
       });
     });
+
+    const panels = {
+      editor: document.querySelector("#editor"),
+      output: document.querySelector("#output"),
+      log: document.querySelector("#log")
+    };
+    const panelTabs = {
+      editor: document.querySelector("#tab_editor"),
+      output: document.querySelector("#tab_output"),
+      log: document.querySelector("#tab_log")
+    };
+
+    function selectPanel(name) {
+      Object.entries(panels).forEach(([panelName, panel]) => {
+        panel.classList.toggle("active-panel", panelName === name);
+        panelTabs[panelName].classList.toggle("active", panelName === name);
+      });
+      if (name === "editor") editor.refresh();
+    }
+
+    Object.entries(panelTabs).forEach(([name, tab]) => {
+      tab.addEventListener("click", () => selectPanel(name));
+    });
+
+    document.querySelector("#run").addEventListener("click", async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      panels.output.textContent = "Checking…";
+      panels.log.textContent = "";
+      selectPanel("output");
+
+      try {
+        const response = await fetch("/check", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({code: documents.main.getValue()})
+        });
+        const result = await response.json();
+        panels.output.textContent = result.stdout || "Success: no type errors found";
+        panels.log.textContent = result.stderr || `mypy exited with status ${result.status}`;
+      } catch (error) {
+        panels.output.textContent = "Type check failed";
+        panels.log.textContent = String(error);
+        selectPanel("log");
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    selectPanel("editor");
   </script>
 </body>
 </html>
