@@ -48,6 +48,21 @@ value: int = bad(1)</textarea>
       tabSize: 4
     });
 
+    async function loadExamples() {
+    const select = document.querySelector("#examples");
+    const response = await fetch("/examples");
+    const dirs = await response.json();
+
+    select.innerHTML = '<option>Select example...</option>';
+    for (const dir of dirs) {
+      const option = document.createElement("option");
+      option.value = dir;
+      option.textContent = dir;
+      select.appendChild(option);
+    }}
+
+    loadExamples();
+    
     const documents = {
       main: editor.getDoc(),
       plugin: new CodeMirror.Doc("", "python")

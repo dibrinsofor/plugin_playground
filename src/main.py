@@ -12,7 +12,11 @@ ROOT = Path(__file__).resolve().parent.parent
 MYPY_CONFIG = ROOT / "mypy.ini"
 MYPY_LOCK = Lock()
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
+EXAMPLES_DIR = Path(__file__).parent / ".." /  "examples"
 
+@app.get("/examples")
+def list_examples():
+    return sorted(p.name for p in EXAMPLES_DIR.iterdir() if p.is_dir())
 
 @app.get("/", include_in_schema=False)
 def playground():
