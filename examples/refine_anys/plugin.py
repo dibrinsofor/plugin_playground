@@ -21,12 +21,6 @@ def refine_explicit_any_return(ctx: FunctionBodyContext) -> FunctionBodyResult |
 
 def inspect_function_definition(ctx: FunctionDefContext) -> FunctionDefHookResult | None:
     declared_return = get_proper_type(ctx.declared_signature.ret_type)
-    if isinstance(declared_return, UnionType):
-        ctx.api.fail(
-            "Union return types are not allowed",
-            ctx.definition,
-            code=UNION_RETURN,
-        )
     if (
         isinstance(declared_return, AnyType)
         and declared_return.type_of_any == TypeOfAny.explicit
