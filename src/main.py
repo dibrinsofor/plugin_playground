@@ -16,7 +16,17 @@ EXAMPLES_DIR = Path(__file__).parent / ".." /  "examples"
 
 @app.get("/examples")
 def list_examples():
-    return sorted(p.name for p in EXAMPLES_DIR.iterdir() if p.is_dir())
+    examples = {}
+    for example_dir in sorted(EXAMPLES_DIR.iterdir()):
+        if not example_dir.is_dir():
+            continue
+        files = {}
+        for filename in ("main.py", "plugin.py"):
+            file_path = example_dir / filename
+            if file_path.is_file():
+                files[filename] = file_path.read_text()
+        examples[example_dir.name] = files
+    return examples
 
 @app.get("/", include_in_schema=False)
 def playground():

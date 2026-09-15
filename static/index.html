@@ -11,7 +11,6 @@
 <div id="workspace">
   <div id="controls">
     <button id="run" title="Run code (Ctrl-Enter)" aria-label="Run code (Ctrl-Enter)">Run Typechecker -&gt;</button>
-    <button id="share" aria-label="Share code">Share</button>
     <select id="examples" aria-label="Example list"><option>Select example...</option></select>
     <div class="separator"></div>
     <button class="active" id="tab_editor" title="Show code (Ctrl-Shift-1)" aria-label="Show code (Ctrl-Shift-1)">Code</button>
@@ -48,18 +47,32 @@ value: int = bad(1)</textarea>
       tabSize: 4
     });
 
-    async function loadExamples() {
-    const select = document.querySelector("#examples");
-    const response = await fetch("/examples");
-    const dirs = await response.json();
+    let examples = {};
 
-    select.innerHTML = '<option>Select example...</option>';
-    for (const dir of dirs) {
-      const option = document.createElement("option");
-      option.value = dir;
-      option.textContent = dir;
-      select.appendChild(option);
+    async function loadExamples() {
+      const select = document.querySelector("#examples");
+      const response = await fetch("/examples");
+      examples = await response.json();
+
+
+      select.innerHTML = '<option>Select example...</option>';
+      for (const name of Object.keys(examples)) {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        select.appendChild(option);
     }}
+
+    document.querySelector("#examples").addEventListener("change", event => {
+      const name = event.target.value;
+      if (!name) return;
+
+      const files = examples[name];
+      documents.main.setValue(files["main.py"] || "");
+      documents.plugin.setValue(files["plugin.py"] || "");
+
+      if (editor.getDoc() === documents.main) editor.refresh();
+    })
 
     loadExamples();
     
