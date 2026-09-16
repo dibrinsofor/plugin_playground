@@ -40,6 +40,7 @@ body {
 #controls select,
 #surface {
   font-family: "Cascadia Code", monospace;
+  box-shadow: 2px 2px #ccc;
 }
 #controls button,
 #controls select,
@@ -60,6 +61,30 @@ body {
   padding-right: .2rem;
   text-transform: uppercase;
   box-shadow: 2px 2px #ccc;
+}
+#controls #examples {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: #fff5b1;
+  border: 1px dotted #000;
+  border-radius: 0;
+  color: #000;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: .1rem;
+  line-height: 1.2rem;
+  padding-left: .3rem;
+  padding-right: .2rem;
+  text-transform: uppercase;
+  box-shadow: 2px 2px #ccc;
+  font-family: "Cascadia Code", monospace;
+  cursor: pointer;
+}
+#controls #examples:hover {
+  background: #000;
+  color: #fff5b1;
+  border-color: #000;
 }
 #controls button.active {
   background: #eef;

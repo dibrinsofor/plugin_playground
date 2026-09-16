@@ -5,20 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mypy Plugin Playground</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.21/lib/codemirror.css">
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css?v=3">
 </head>
 <body>
 <div id="workspace">
   <div id="controls">
     <button id="run" title="Run code (Ctrl-Enter)" aria-label="Run code (Ctrl-Enter)">Run Typechecker -&gt;</button>
-    <select id="examples" aria-label="Example list"><option>Select example...</option></select>
+    <select id="examples" aria-label="Example list"><option>Select example &#9660;</option></select>
     <div class="separator"></div>
     <button class="active" id="tab_editor" title="Show code (Ctrl-Shift-1)" aria-label="Show code (Ctrl-Shift-1)">Code</button>
     <label class="checkbox-tab" for="plugin_fork">
       <input type="checkbox" id="plugin_fork">
       <span>Run without plugin hook</span>
     </label>
-     <button id="tab_output" title="Show output (Ctrl-Shift-2)" aria-label="Show output (Ctrl-Shift-2)">Output</button>
   </div>
 
   <div id="surface">
@@ -128,19 +127,19 @@ value: int = bad(1)</textarea>
     };
     const panelTabs = {
       editor: document.querySelector("#tab_editor"),
-      output: document.querySelector("#tab_output"),
     };
 
     function selectPanel(name) {
       Object.entries(panels).forEach(([panelName, panel]) => {
         panel.classList.toggle("active-panel", panelName === name);
-        panelTabs[panelName].classList.toggle("active", panelName === name);
+        const tab = panelTabs[panelName];
+        if (tab) tab.classList.toggle("active", panelName === name);
       });
       if (name === "editor") editor.refresh();
     }
 
     Object.entries(panelTabs).forEach(([name, tab]) => {
-      tab.addEventListener("click", () => selectPanel(name));
+      if (tab) tab.addEventListener("click", () => selectPanel(name));
     });
 
     document.querySelector("#run").addEventListener("click", async event => {
@@ -153,10 +152,15 @@ value: int = bad(1)</textarea>
         const response = await fetch("/check", {
           method: "POST",
           headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({code: documents.main.getValue()})
+          body: JSON.stringify({
+            code: documents.main.getValue(),
+            plugin_code: documents.plugin.getValue(),
+            no_plugin: document.querySelector("#plugin_fork").checked
+          })
         });
         const result = await response.json();
-        panels.output.textContent = result.stdout || "Success: no type errors found";
+        const output = result.stdout || result.stderr || "Success: no type errors found";
+        panels.output.textContent = output;
       } catch (error) {
         panels.output.textContent = "Type check failed";
         selectPanel("log");
