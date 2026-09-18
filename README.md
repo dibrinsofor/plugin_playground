@@ -7,7 +7,7 @@ Plugin playground, extends mypy plugins.
 
 Installation
 
-- `pip install -r requirements.txt # n virtual env`
+- `pip install -r requirements.txt # in virtual env`
 - `uvicorn src.main:app --reload --port 8080`
 
 ![screenshot](static/snapshot.png)
